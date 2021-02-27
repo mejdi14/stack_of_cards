@@ -46,22 +46,34 @@ class _MyHomePageState extends State<MyHomePage> {
     List<Widget> list = [];
     var elevation = 10.0;
     for(var i in listColors){
-      list.add(  Positioned(
-        top: elevation,
-        child: Card(
-          elevation: elevation,
-          color: i,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Container(
-            height: 200,
-            width: 300,
+      list.add(  GestureDetector(
+        onVerticalDragUpdate:
+            (DragUpdateDetails dragUpdateDetails) {
+
+            _updateCardsPosition(dragUpdateDetails.delta.dy, i);
+
+        },
+        child: Positioned(
+          top: elevation,
+          child: Card(
+            elevation: elevation,
+            color: i,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+              height: 200,
+              width: 300,
+            ),
           ),
         ),
       ));
-      elevation += 10;
+      elevation += 40;
     }
     return list;
+  }
+
+  void _updateCardsPosition(double dy, MaterialColor i) {
+    print('index is $i');
   }
 }
