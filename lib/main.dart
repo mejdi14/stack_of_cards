@@ -20,23 +20,24 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);
 
-
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   void _incrementCounter() {
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(body: Center(child: Stack(
+      alignment: Alignment.center,
+      children: [
+        Card(
 
-    );
+        )
+      ],
+    )));
   }
 }
