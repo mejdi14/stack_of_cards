@@ -25,6 +25,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var listColors = [Colors.red, Colors.yellow, Colors.green];
   void _incrementCounter() {
     setState(() {});
   }
@@ -35,10 +36,21 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Center(
             child: Stack(
       alignment: Alignment.center,
-      children: [
-        Card(
-          elevation: 10,
-          color: Colors.blue,
+      children:
+                <Widget>[..._buildCards()]
+      ,
+    )));
+  }
+
+  _buildCards(){
+    List<Widget> list = [];
+    var elevation = 10.0;
+    for(var i in listColors){
+      list.add(  Positioned(
+        top: elevation,
+        child: Card(
+          elevation: elevation,
+          color: i,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -46,8 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
             height: 200,
             width: 300,
           ),
-        )
-      ],
-    )));
+        ),
+      ));
+      elevation += 10;
+    }
+    return list;
   }
 }
