@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
     MyCard(80, Colors.yellow),
     MyCard(120, Colors.green)
   ];
-  var fixedList =  [];
+  List<MyCard> fixedList =  [];
 
 
   void _incrementCounter() {
@@ -90,7 +90,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if (dy < 0) {
       previousCard.positionY -= dy;
     } else {
+      if(fixedList[position + 1].positionY <  (nextCard.positionY - fixedList[position + 1].positionY / 2))
       nextCard.positionY -= dy;
+      else if(fixedList[position + 1].positionY ==  (nextCard.positionY - fixedList[position + 1].positionY / 2)){
+        listColors[position] = fixedList[position + 1];
+        listColors[position + 1] = fixedList[position;
+      }else
+        previousCard.positionY += dy;
     }
     setState(() {});
   }
