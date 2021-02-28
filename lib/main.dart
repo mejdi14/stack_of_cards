@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: GestureDetector(
           onVerticalDragUpdate:
               (DragUpdateDetails dragUpdateDetails) {
-              _updateCardsPosition(dragUpdateDetails.delta.dy, listColors[i]);
+              _updateCardsPosition(dragUpdateDetails.delta.dy, listColors[i], listColors[i - 1], listColors[i + 1]);
           },
 
             child: Card(
@@ -74,8 +74,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return list;
   }
 
-  void _updateCardsPosition(double dy, MyCard myCard) {
+  void _updateCardsPosition(double dy, MyCard myCard, MyCard previousCard, MyCard nextCard) {
     myCard.positionY += dy;
+    if(dy < 0)
+      previousCard.positionY -= dy;
+    else
+      nextCard.positionY -= dy;
     setState(() {
 
     });
