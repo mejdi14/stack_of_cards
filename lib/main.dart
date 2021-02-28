@@ -27,9 +27,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var listColors = [MyCard(20, Colors.red), MyCard(50, Colors.yellow), MyCard(70, Colors.green)];
+  var listColors = [
+    MyCard(40, Colors.red),
+    MyCard(80, Colors.yellow),
+    MyCard(120, Colors.green)
+  ];
+  var fixedList =  [];
+
+
   void _incrementCounter() {
     setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fixedList = listColors;
   }
 
   @override
@@ -38,54 +51,47 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Center(
             child: Stack(
       alignment: Alignment.center,
-      children:
-                <Widget>[..._buildCards()]
-      ,
+      children: <Widget>[..._buildCards()],
     )));
   }
 
-  _buildCards(){
+  _buildCards() {
     List<Widget> list = [];
     var elevation = 10.0;
-    for(var i = 0; i < listColors.length; i++){
-      list.add(  Positioned(
+    for (var i = 0; i < listColors.length; i++) {
+      list.add(Positioned(
         top: listColors[i].positionY,
         child: GestureDetector(
-          onVerticalDragUpdate:
-              (DragUpdateDetails dragUpdateDetails) {
-              _updateCardsPosition(dragUpdateDetails.delta.dy, listColors[i], listColors[i - 1], listColors[i + 1]);
+          onVerticalDragUpdate: (DragUpdateDetails dragUpdateDetails) {
+            _updateCardsPosition(dragUpdateDetails.delta.dy, listColors[i],
+                listColors[i - 1], listColors[i + 1], i);
           },
-
-            child: Card(
-              elevation: elevation,
-              color: listColors[i].color,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Container(
-                height: 200,
-                width: 300,
-              ),
+          child: Card(
+            elevation: elevation,
+            color: listColors[i].color,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+              height: 200,
+              width: 300,
             ),
           ),
+        ),
       ));
       elevation += 40;
     }
     return list;
   }
 
-  void _updateCardsPosition(double dy, MyCard myCard, MyCard previousCard, MyCard nextCard) {
+  void _updateCardsPosition(double dy, MyCard myCard, MyCard previousCard,
+      MyCard nextCard, int position) {
     myCard.positionY += dy;
-    if(dy < 0){
-
+    if (dy < 0) {
       previousCard.positionY -= dy;
-    }
-    else{
-
+    } else {
       nextCard.positionY -= dy;
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 }
