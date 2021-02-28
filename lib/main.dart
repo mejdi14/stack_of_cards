@@ -76,10 +76,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _updateCardsPosition(double dy, MyCard myCard, MyCard previousCard, MyCard nextCard) {
     myCard.positionY += dy;
-    if(dy < 0)
+    if(dy < 0){
+
       previousCard.positionY -= dy;
-    else
+    }
+    else{
+
       nextCard.positionY -= dy;
+    }
     setState(() {
 
     });
