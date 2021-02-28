@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'Card.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -25,7 +27,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var listColors = [Colors.red, Colors.yellow, Colors.green];
+  var listColors = [MyCard(20, Colors.red), MyCard(50, Colors.yellow), MyCard(70, Colors.green)];
   void _incrementCounter() {
     setState(() {});
   }
@@ -45,35 +47,37 @@ class _MyHomePageState extends State<MyHomePage> {
   _buildCards(){
     List<Widget> list = [];
     var elevation = 10.0;
-    for(var i in listColors){
-      list.add(  GestureDetector(
-        onVerticalDragUpdate:
-            (DragUpdateDetails dragUpdateDetails) {
+    for(var i = 0; i < listColors.length; i++){
+      list.add(  Positioned(
+        top: listColors[i].positionY,
+        child: GestureDetector(
+          onVerticalDragUpdate:
+              (DragUpdateDetails dragUpdateDetails) {
+              _updateCardsPosition(dragUpdateDetails.delta.dy, listColors[i]);
+          },
 
-            _updateCardsPosition(dragUpdateDetails.delta.dy, i);
-
-        },
-        child: Positioned(
-          top: elevation,
-          child: Card(
-            elevation: elevation,
-            color: i,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Container(
-              height: 200,
-              width: 300,
+            child: Card(
+              elevation: elevation,
+              color: listColors[i].color,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Container(
+                height: 200,
+                width: 300,
+              ),
             ),
           ),
-        ),
       ));
       elevation += 40;
     }
     return list;
   }
 
-  void _updateCardsPosition(double dy, MaterialColor i) {
-    print('index is $i');
+  void _updateCardsPosition(double dy, MyCard myCard) {
+    myCard.positionY += dy;
+    setState(() {
+
+    });
   }
 }
