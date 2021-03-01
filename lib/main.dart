@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -97,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _updateCardsPosition(double dy, MyCard myCard, MyCard previousCard,
       MyCard nextCard, int position) {
+    if((listColors[position].positionY + dy) > listColors[0].positionY)
     listColors[position].positionY += dy;
     print('current position: ${    listColors[position].positionY
     }');
@@ -111,19 +114,13 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         counter++;
       }
-    /*  if (listColors[position - 1].positionY < listColors[position].positionY) {
-        listColors[position - 1].positionY -= dy;
-        print('i am here');
-      }
-      if (listColors[position + 1].positionY > fixedList[position].positionY) {
-        listColors[position + 1].positionY += dy;
-      }*/
       if (destination != null &&
           listColors[position + 1].color != listColors[destination].color) {
         print('my distination: $destination');
       //  listColors[position + 1] = listColors[destination];
-        fixedList[destination].positionY =  fixedList[destination].positionY + 40;
+        fixedList[destination].positionY =  fixedList[destination].positionY + 100;
         listColors.insert(position + 1, fixedList[destination]);
+        movePreviousCardWithAnimation((position + 1), 60);
         print("list colors : ${listColors.length}");
       }
     }
@@ -139,5 +136,17 @@ class _MyHomePageState extends State<MyHomePage> {
         listColors[position + 1].positionY += dy;*/
     //  }
     setState(() {});
+  }
+
+  void movePreviousCardWithAnimation(int position, int currentY) {
+    Timer timer;
+    var goal = listColors[position].positionY - 60;
+    timer = Timer.periodic(Duration(milliseconds: 10), (Timer t) {
+      if(listColors[position].positionY > goal){
+        listColors[position].positionY -= 2;
+    }
+      else
+        timer?.cancel();
+    });
   }
 }
