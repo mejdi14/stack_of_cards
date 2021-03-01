@@ -103,30 +103,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _updateCardsPosition(double dy, MyCard myCard, MyCard previousCard,
       MyCard nextCard, int position) {
-    if((listColors[position].positionY + dy) > listColors[0].positionY)
+    if((listColors[position].positionY + dy) > listColors[0].positionY &&
+        (listColors[position].positionY + dy) < listColors[listColors.length - 1].positionY)
     listColors[position].positionY += dy;
     print('current position: ${    listColors[position].positionY
     }');
     if (dy < 0) {
-      var destination = null;
+      var destination;
       var counter = 0;
       for (var card in listColors) {
         if (card.positionY >= listColors[position].positionY - 10
         && card.positionY <= listColors[position].positionY + 10
         && card != listColors[position]){
           destination = counter;
+
         }
         counter++;
       }
       if (destination != null &&
           listColors[position + 1].color != listColors[destination].color) {
-        print('my distination: $destination');
+        elasticPosition = listColors[destination].positionY;
       //  listColors[position + 1] = listColors[destination];
         fixedList[destination].positionY =  fixedList[destination].positionY + 100;
         listColors.insert(position + 1, fixedList[destination]);
         //listColors[destination].color = Colors.transparent;
         movePreviousCardWithAnimation((position + 1), 60, destination);
-        print("list colors : ${listColors.length}");
       }
     }
  /*   else {
@@ -136,7 +137,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void movePreviousCardWithAnimation(int position, int currentY, int destination) {
-    print('destination is: $destination');
     Timer timer;
     var goal = listColors[position].positionY - 60;
     timer = Timer.periodic(Duration(milliseconds: 10), (Timer t) {
