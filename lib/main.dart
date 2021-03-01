@@ -31,6 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var elasticPosition;
+  var currentDragPosition;
   var listColors = [
     MyCard(60, Colors.red),
     MyCard(120, Colors.yellow),
@@ -47,7 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
     MyCard(300, Colors.green),
     MyCard(360, Colors.blue),
   ];
-
 
   @override
   void initState() {
@@ -81,7 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 listColors[i - 1], listColors[i + 1], i);
           },
           onVerticalDragEnd: (DragEndDetails dragEndDetails) {
-
+            if (elasticPosition != null) {
+              startElasticPositionning(i);
+            }
           },
           child: Card(
             elevation: elevation,
@@ -103,49 +105,91 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _updateCardsPosition(double dy, MyCard myCard, MyCard previousCard,
       MyCard nextCard, int position) {
-    if((listColors[position].positionY + dy) > listColors[0].positionY &&
-        (listColors[position].positionY + dy) < listColors[listColors.length - 1].positionY)
-    listColors[position].positionY += dy;
-    print('current position: ${    listColors[position].positionY
-    }');
+    if ((listColors[position].positionY + dy) > listColors[0].positionY &&
+        (listColors[position].positionY + dy) <
+            listColors[listColors.length - 1].positionY)
+      listColors[position].positionY += dy;
+    print('current position: ${listColors[position].positionY}');
     if (dy < 0) {
       var destination;
       var counter = 0;
       for (var card in listColors) {
-        if (card.positionY >= listColors[position].positionY - 10
-        && card.positionY <= listColors[position].positionY + 10
-        && card != listColors[position]){
+        if (card.positionY >= listColors[position].positionY - 10 &&
+            card.positionY <= listColors[position].positionY + 10 &&
+            card != listColors[position]) {
           destination = counter;
-
         }
         counter++;
       }
       if (destination != null &&
           listColors[position + 1].color != listColors[destination].color) {
         elasticPosition = listColors[destination].positionY;
-      //  listColors[position + 1] = listColors[destination];
-        fixedList[destination].positionY =  fixedList[destination].positionY + 100;
+        //  listColors[position + 1] = listColors[destination];
+        fixedList[destination].positionY =
+            fixedList[destination].positionY + 100;
         listColors.insert(position + 1, fixedList[destination]);
         //listColors[destination].color = Colors.transparent;
         movePreviousCardWithAnimation((position + 1), 60, destination);
       }
+    } else {
+      var destination;
+      var counter = 0;
+      for (var card in listColors) {
+        if (card.positionY <= listColors[position].positionY - 10 &&
+            card.positionY >= listColors[position].positionY + 10 &&
+            card != listColors[position]) {
+          destination = counter;
+        }
+        counter++;
+      }
+      if (destination != null &&
+          listColors[position - 1].color != listColors[destination].color) {
+        elasticPosition = listColors[destination].positionY;
+        //  listColors[position + 1] = listColors[destination];
+        fixedList[destination].positionY =
+            fixedList[destination].positionY + 100;
+        listColors.insert(position - 1, fixedList[destination]);
+        //listColors[destination].color = Colors.transparent;
+        moveNextCardWithAnimation((position - 1), 60, destination);
+      }
     }
- /*   else {
-
-      }*/
     setState(() {});
   }
 
-  void movePreviousCardWithAnimation(int position, int currentY, int destination) {
+  void movePreviousCardWithAnimation(
+      int position, int currentY, int destination) {
     Timer timer;
     var goal = listColors[position].positionY - 60;
-    timer = Timer.periodic(Duration(milliseconds: 10), (Timer t) {
-      if(listColors[position].positionY > goal){
+    timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
+      if (listColors[position].positionY > goal) {
         listColors[position].positionY -= 2;
-    }
-      else{
+      } else {
         timer?.cancel();
       }
     });
   }
+
+  void startElasticPositionning(int position) {
+    Timer timer;
+    bool positive = elasticPosition > listColors[position].positionY;
+    timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
+      if (positive) {
+        if (listColors[position].positionY < elasticPosition) {
+          listColors[position].positionY += 2;
+        } else {
+          timer?.cancel();
+        }
+      } else {
+        if (listColors[position].positionY > elasticPosition) {
+          listColors[position].positionY -= 2;
+        } else {
+          timer?.cancel();
+          elasticPosition = null;
+        }
+      }
+      setState(() {});
+    });
+  }
+
+  void moveNextCardWithAnimation(int i, int j, destination) {}
 }
