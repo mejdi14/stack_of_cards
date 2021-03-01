@@ -30,6 +30,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var elasticPosition;
   var listColors = [
     MyCard(60, Colors.red),
     MyCard(120, Colors.yellow),
@@ -79,6 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
             _updateCardsPosition(dragUpdateDetails.delta.dy, listColors[i],
                 listColors[i - 1], listColors[i + 1], i);
           },
+          onVerticalDragEnd: (DragEndDetails dragEndDetails) {
+
+          },
           child: Card(
             elevation: elevation,
             color: listColors[i].color,
@@ -120,33 +124,28 @@ class _MyHomePageState extends State<MyHomePage> {
       //  listColors[position + 1] = listColors[destination];
         fixedList[destination].positionY =  fixedList[destination].positionY + 100;
         listColors.insert(position + 1, fixedList[destination]);
-        movePreviousCardWithAnimation((position + 1), 60);
+        //listColors[destination].color = Colors.transparent;
+        movePreviousCardWithAnimation((position + 1), 60, destination);
         print("list colors : ${listColors.length}");
       }
     }
-    /*else {
-      if(fixedList[position + 1].positionY < (listColors[position + 1].positionY - fixedList[position + 1].positionY / 2))
-        listColors[position + 1].positionY -= dy;
-      else if(fixedList[position - 1].positionY >=  ((listColors[position - 1].positionY - fixedList[position - 1].positionY / 2)) - 5 ||
-          fixedList[position - 1].positionY <=  ((listColors[position - 1].positionY - fixedList[position - 1].positionY / 2)) + 5){
-        print('now is equal');
-        listColors[position] = fixedList[position + 1];
-        listColors[position + 1] = fixedList[position];
-      }else
-        listColors[position + 1].positionY += dy;*/
-    //  }
+ /*   else {
+
+      }*/
     setState(() {});
   }
 
-  void movePreviousCardWithAnimation(int position, int currentY) {
+  void movePreviousCardWithAnimation(int position, int currentY, int destination) {
+    print('destination is: $destination');
     Timer timer;
     var goal = listColors[position].positionY - 60;
     timer = Timer.periodic(Duration(milliseconds: 10), (Timer t) {
       if(listColors[position].positionY > goal){
         listColors[position].positionY -= 2;
     }
-      else
+      else{
         timer?.cancel();
+      }
     });
   }
 }
