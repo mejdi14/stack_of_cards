@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
     MyCard(360, Colors.blue),
   ];
 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -97,20 +98,20 @@ class _MyHomePageState extends State<MyHomePage> {
   void _updateCardsPosition(double dy, MyCard myCard, MyCard previousCard,
       MyCard nextCard, int position) {
     listColors[position].positionY += dy;
-    print('current position: ${listColors[position].positionY}');
+    print('current position: ${    listColors[position].positionY
+    }');
     if (dy < 0) {
       var destination = null;
       var counter = 0;
       for (var card in listColors) {
-        if (card.positionY >= listColors[position].positionY - 30 &&
-            card.positionY <= listColors[position].positionY + 30 &&
-            card != listColors[position]) {
+        if (card.positionY >= listColors[position].positionY - 10
+        && card.positionY <= listColors[position].positionY + 10
+        && card != listColors[position]){
           destination = counter;
         }
         counter++;
       }
-
-      /*  if (listColors[position - 1].positionY < listColors[position].positionY) {
+    /*  if (listColors[position - 1].positionY < listColors[position].positionY) {
         listColors[position - 1].positionY -= dy;
         print('i am here');
       }
@@ -120,12 +121,9 @@ class _MyHomePageState extends State<MyHomePage> {
       if (destination != null &&
           listColors[position + 1].color != listColors[destination].color) {
         print('my distination: $destination');
-        //  listColors[position + 1] = listColors[destination];
-
-        fixedList[destination].positionY =
-            fixedList[destination].positionY + 40;
+      //  listColors[position + 1] = listColors[destination];
+        fixedList[destination].positionY =  fixedList[destination].positionY + 40;
         listColors.insert(position + 1, fixedList[destination]);
-
         print("list colors : ${listColors.length}");
       }
     }
