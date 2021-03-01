@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'Card.dart';
@@ -28,30 +29,40 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var listColors = [
-    MyCard(40, Colors.red),
-    MyCard(80, Colors.yellow),
-    MyCard(120, Colors.green)
+    MyCard(60, Colors.red),
+    MyCard(120, Colors.yellow),
+    MyCard(180, Colors.purple),
+    MyCard(240, Colors.orange),
+    MyCard(300, Colors.green),
+    MyCard(360, Colors.blue),
   ];
-  List<MyCard> fixedList =  [];
+  List<MyCard> fixedList = [
+    MyCard(60, Colors.red),
+    MyCard(120, Colors.yellow),
+    MyCard(180, Colors.purple),
+    MyCard(240, Colors.orange),
+    MyCard(300, Colors.green),
+    MyCard(360, Colors.blue),
+  ];
 
 
-  void _incrementCounter() {
-    setState(() {});
-  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    fixedList = listColors;
+    print('i have called init state');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-            child: Stack(
-      alignment: Alignment.center,
-      children: <Widget>[..._buildCards()],
+            child: Padding(
+      padding: const EdgeInsets.only(top: 118.0),
+      child: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[..._buildCards()],
+      ),
     )));
   }
 
@@ -79,25 +90,54 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ));
-      elevation += 40;
+      // elevation += 40;
     }
     return list;
   }
 
   void _updateCardsPosition(double dy, MyCard myCard, MyCard previousCard,
       MyCard nextCard, int position) {
-    myCard.positionY += dy;
+    listColors[position].positionY += dy;
+    print('current position: ${    listColors[position].positionY
+    }');
     if (dy < 0) {
-      previousCard.positionY -= dy;
-    } else {
-      if(fixedList[position + 1].positionY <  (nextCard.positionY - fixedList[position + 1].positionY / 2))
-      nextCard.positionY -= dy;
-      else if(fixedList[position + 1].positionY ==  (nextCard.positionY - fixedList[position + 1].positionY / 2)){
-        listColors[position] = fixedList[position + 1];
-        listColors[position + 1] = fixedList[position;
-      }else
-        previousCard.positionY += dy;
+      var destination = null;
+      var counter = 0;
+      for (var card in listColors) {
+        if (card.positionY >= listColors[position].positionY - 1
+        && card.positionY <= listColors[position].positionY + 1
+        && card != listColors[position]){
+          destination = counter;
+        }
+        counter++;
+      }
+    /*  if (listColors[position - 1].positionY < listColors[position].positionY) {
+        listColors[position - 1].positionY -= dy;
+        print('i am here');
+      }
+      if (listColors[position + 1].positionY > fixedList[position].positionY) {
+        listColors[position + 1].positionY += dy;
+      }*/
+      if (destination != null &&
+          listColors[position + 1].color != listColors[destination].color) {
+        print('my distination: $destination');
+      //  listColors[position + 1] = listColors[destination];
+        fixedList[destination].positionY =  fixedList[destination].positionY + 40;
+        listColors.insert(position + 1, fixedList[destination]);
+        print("list colors : ${listColors.length}");
+      }
     }
+    /*else {
+      if(fixedList[position + 1].positionY < (listColors[position + 1].positionY - fixedList[position + 1].positionY / 2))
+        listColors[position + 1].positionY -= dy;
+      else if(fixedList[position - 1].positionY >=  ((listColors[position - 1].positionY - fixedList[position - 1].positionY / 2)) - 5 ||
+          fixedList[position - 1].positionY <=  ((listColors[position - 1].positionY - fixedList[position - 1].positionY / 2)) + 5){
+        print('now is equal');
+        listColors[position] = fixedList[position + 1];
+        listColors[position + 1] = fixedList[position];
+      }else
+        listColors[position + 1].positionY += dy;*/
+    //  }
     setState(() {});
   }
 }
