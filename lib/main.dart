@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onVerticalDragEnd: (DragEndDetails dragEndDetails) {
             if (elasticPosition != null) {
               print('end drag details: $dragEndDetails');
-              startElasticPositionning(i);
+              startElasticPositioning(i);
             }
           },
           child: Card(
@@ -147,10 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         counter++;
       }
-      print('destination result : $destination');
       if (destination != null &&
           listColors[position - 1].color != listColors[destination].color) {
-        print('we got here also $destination');
         elasticPosition = listColors[destination].positionY;
         fixedList[destination].positionY =
             fixedList[destination].positionY + 100;
@@ -164,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void movePreviousCardWithAnimation(
       int position, int currentY, int destination) {
     Timer timer;
-    var goal = listColors[position].positionY - 40;
+    var goal = listColors[position].positionY - currentY;
     timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
       if (listColors[position].positionY > goal) {
         listColors[position].positionY -= 2;
@@ -174,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> startElasticPositionning(int position) async {
+  Future<void> startElasticPositioning(int position) async {
     Timer timer;
     bool positive = elasticPosition > listColors[position].positionY;
     timer = await Timer.periodic(Duration(milliseconds: 2), (Timer t) {
@@ -183,7 +181,6 @@ class _MyHomePageState extends State<MyHomePage> {
           listColors[position].positionY += 1;
         } else {
           timer?.cancel();
-          elasticPosition = null;
           startPurgingTheList();
         }
       } else {
@@ -191,7 +188,6 @@ class _MyHomePageState extends State<MyHomePage> {
           listColors[position].positionY -= 1;
         } else {
           timer?.cancel();
-          elasticPosition = null;
           startPurgingTheList();
         }
       }
@@ -200,7 +196,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void moveNextCardWithAnimation(int position, int currentY, int destination) {
-    print('we are entered here: ${position}');
     Timer timer;
     var goal = listColors[position].positionY + 60;
     timer = Timer.periodic(Duration(milliseconds: 2), (Timer t) {
@@ -214,6 +209,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void startPurgingTheList() {
     print('initial list: $listColors');
+    resetColorsList();
+    purgeList = [];
+    fixedList = listColors;
+    elasticPosition = null;
+    currentDragPosition = null;
+    print('after modification list: $listColors');
+  }
+
+  void resetColorsList() {
     if (purgeList.length > 0) {
       for (var index in purgeList) {
         if (index >= 0 && index < listColors.length) {
@@ -221,10 +225,5 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     }
-    purgeList = [];
-    fixedList = listColors;
-    elasticPosition = null;
-    currentDragPosition = null;
-    print('after modification list: $listColors');
   }
 }
