@@ -32,6 +32,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var elasticPosition;
   var currentDragPosition;
+  bool ableToDrag = true;
   List<int> purgeList = [];
   var listColors = [
     MyCard(60, Colors.red, "red"),
@@ -77,8 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
         top: listColors[i].positionY,
         child: GestureDetector(
           onVerticalDragUpdate: (DragUpdateDetails dragUpdateDetails) {
-            _updateCardsPosition(dragUpdateDetails.delta.dy, listColors[i],
-                listColors[i - 1], listColors[i + 1], i);
+            if (ableToDrag) {
+              _updateCardsPosition(dragUpdateDetails.delta.dy, listColors[i],
+                  listColors[i - 1], listColors[i + 1], i);
+            }
           },
           onVerticalDragEnd: (DragEndDetails dragEndDetails) {
             if (elasticPosition != null) {
@@ -137,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     ////////////////////// down drag animation//////////////////////////////////
     else {
-      var destination;
+      /* var destination;
       var counter = 0;
       for (var card in listColors) {
         if (card.positionY >= listColors[position].positionY + 10 &&
@@ -154,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
             fixedList[destination].positionY + 100;
         listColors.insert(position - 1, fixedList[destination]);
         moveNextCardWithAnimation((position - 1), 60, destination);
-      }
+      }*/
     }
     setState(() {});
   }
@@ -162,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void movePreviousCardWithAnimation(
       int position, int currentY, int destination) {
     Timer timer;
-    var goal = listColors[position].positionY - currentY;
+    var goal = listColors[position].positionY - 40;
     timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
       if (listColors[position].positionY > goal) {
         listColors[position].positionY -= 2;
@@ -175,17 +178,18 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> startElasticPositioning(int position) async {
     Timer timer;
     bool positive = elasticPosition > listColors[position].positionY;
-    timer = await Timer.periodic(Duration(milliseconds: 2), (Timer t) {
+    ableToDrag = false;
+    timer = await Timer.periodic(Duration(milliseconds: 5), (Timer t) {
       if (positive) {
         if (listColors[position].positionY < elasticPosition) {
-          listColors[position].positionY += 1;
+          listColors[position].positionY += 2;
         } else {
           timer?.cancel();
           startPurgingTheList();
         }
       } else {
         if (listColors[position].positionY > elasticPosition) {
-          listColors[position].positionY -= 1;
+          listColors[position].positionY -= 2;
         } else {
           timer?.cancel();
           startPurgingTheList();
@@ -214,6 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
     fixedList = listColors;
     elasticPosition = null;
     currentDragPosition = null;
+    ableToDrag = true;
     print('after modification list: $listColors');
   }
 
