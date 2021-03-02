@@ -110,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
         (listColors[position].positionY + dy) <
             listColors[listColors.length - 1].positionY)
       listColors[position].positionY += dy;
-   ////////////////////////////// up drag animation/////////////////////////////
+    ////////////////////////////// up drag animation/////////////////////////////
     if (dy < 0) {
       var destination;
       var counter = 0;
@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> startElasticPositionning(int position) async {
     Timer timer;
     bool positive = elasticPosition > listColors[position].positionY;
-    timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
+    timer = await Timer.periodic(Duration(milliseconds: 5), (Timer t) {
       if (positive) {
         if (listColors[position].positionY < elasticPosition) {
           listColors[position].positionY += 2;
@@ -190,14 +190,12 @@ class _MyHomePageState extends State<MyHomePage> {
         } else {
           timer?.cancel();
           elasticPosition = null;
+          startPurgingTheList();
         }
       }
       setState(() {});
     });
-    if (purgeList.length > 0) {
-      for(var index in purgeList)
-            listColors.removeAt(index);
-    }
+
     print('the elastic position: $elasticPosition');
     print('the final list size: ${listColors.length}');
   }
@@ -213,5 +211,15 @@ class _MyHomePageState extends State<MyHomePage> {
         timer?.cancel();
       }
     });
+  }
+
+  void startPurgingTheList() {
+    if (purgeList.length > 0) {
+      for (var index in purgeList){
+        if (index >= 0 && index < listColors.length) {
+          listColors.removeAt(index);
+        }
+      }
+    }
   }
 }
