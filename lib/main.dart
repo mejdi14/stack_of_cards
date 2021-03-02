@@ -32,6 +32,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var elasticPosition;
   var currentDragPosition;
+  List<int> purgeList = [];
   var listColors = [
     MyCard(60, Colors.red),
     MyCard(120, Colors.yellow),
@@ -53,7 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('i have called init state');
   }
 
   @override
@@ -82,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           onVerticalDragEnd: (DragEndDetails dragEndDetails) {
             if (elasticPosition != null) {
+              print('end drag details: $dragEndDetails');
               startElasticPositionning(i);
             }
           },
@@ -109,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
         (listColors[position].positionY + dy) <
             listColors[listColors.length - 1].positionY)
       listColors[position].positionY += dy;
-    print('current position: ${listColors[position].positionY}');
+   ////////////////////////////// up drag animation/////////////////////////////
     if (dy < 0) {
       var destination;
       var counter = 0;
@@ -121,35 +122,39 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         counter++;
       }
+      print('destination result : $destination');
       if (destination != null &&
           listColors[position + 1].color != listColors[destination].color) {
         elasticPosition = listColors[destination].positionY;
         //  listColors[position + 1] = listColors[destination];
         fixedList[destination].positionY =
             fixedList[destination].positionY + 100;
+        purgeList.add(destination);
         listColors.insert(position + 1, fixedList[destination]);
         //listColors[destination].color = Colors.transparent;
         movePreviousCardWithAnimation((position + 1), 60, destination);
       }
-    } else {
+    }
+    ////////////////////// down drag animation//////////////////////////////////
+    else {
       var destination;
       var counter = 0;
       for (var card in listColors) {
-        if (card.positionY <= listColors[position].positionY - 10 &&
-            card.positionY >= listColors[position].positionY + 10 &&
+        if (card.positionY >= listColors[position].positionY + 10 &&
+            card.positionY <= listColors[position].positionY - 10 &&
             card != listColors[position]) {
           destination = counter;
         }
         counter++;
       }
+      print('destination result : $destination');
       if (destination != null &&
           listColors[position - 1].color != listColors[destination].color) {
+        print('we got here also $destination');
         elasticPosition = listColors[destination].positionY;
-        //  listColors[position + 1] = listColors[destination];
         fixedList[destination].positionY =
             fixedList[destination].positionY + 100;
         listColors.insert(position - 1, fixedList[destination]);
-        //listColors[destination].color = Colors.transparent;
         moveNextCardWithAnimation((position - 1), 60, destination);
       }
     }
@@ -169,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void startElasticPositionning(int position) {
+  Future<void> startElasticPositionning(int position) async {
     Timer timer;
     bool positive = elasticPosition > listColors[position].positionY;
     timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
@@ -189,7 +194,24 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       setState(() {});
     });
+    if (purgeList.length > 0) {
+      for(var index in purgeList)
+            listColors.removeAt(index);
+    }
+    print('the elastic position: $elasticPosition');
+    print('the final list size: ${listColors.length}');
   }
 
-  void moveNextCardWithAnimation(int i, int j, destination) {}
+  void moveNextCardWithAnimation(int position, int currentY, int destination) {
+    print('we are entered here: ${position}');
+    Timer timer;
+    var goal = listColors[position].positionY + 60;
+    timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
+      if (listColors[position].positionY < goal) {
+        listColors[position].positionY += 2;
+      } else {
+        timer?.cancel();
+      }
+    });
+  }
 }
