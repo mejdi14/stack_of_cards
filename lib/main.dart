@@ -34,20 +34,20 @@ class _MyHomePageState extends State<MyHomePage> {
   var currentDragPosition;
   List<int> purgeList = [];
   var listColors = [
-    MyCard(60, Colors.red),
-    MyCard(120, Colors.yellow),
-    MyCard(180, Colors.purple),
-    MyCard(240, Colors.orange),
-    MyCard(300, Colors.green),
-    MyCard(360, Colors.blue),
+    MyCard(60, Colors.red, "red"),
+    MyCard(120, Colors.yellow,"yellow"),
+    MyCard(180, Colors.purple, "purple"),
+    MyCard(240, Colors.orange, "orange"),
+    MyCard(300, Colors.green, "green"),
+    MyCard(360, Colors.blue, "blue"),
   ];
   List<MyCard> fixedList = [
-    MyCard(60, Colors.red),
-    MyCard(120, Colors.yellow),
-    MyCard(180, Colors.purple),
-    MyCard(240, Colors.orange),
-    MyCard(300, Colors.green),
-    MyCard(360, Colors.blue),
+    MyCard(60, Colors.red, "red"),
+    MyCard(120, Colors.yellow, "yellow"),
+    MyCard(180, Colors.purple, "purple"),
+    MyCard(240, Colors.orange, "orange"),
+    MyCard(300, Colors.green, "green"),
+    MyCard(360, Colors.blue, "blue"),
   ];
 
   @override
@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
         purgeList.add(destination);
         listColors.insert(position + 1, fixedList[destination]);
         //listColors[destination].color = Colors.transparent;
-        movePreviousCardWithAnimation((position + 1), 60, destination);
+        movePreviousCardWithAnimation((position + 1), 40, destination);
       }
     }
     ////////////////////// down drag animation//////////////////////////////////
@@ -164,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void movePreviousCardWithAnimation(
       int position, int currentY, int destination) {
     Timer timer;
-    var goal = listColors[position].positionY - 60;
+    var goal = listColors[position].positionY - 40;
     timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
       if (listColors[position].positionY > goal) {
         listColors[position].positionY -= 2;
@@ -177,16 +177,18 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> startElasticPositionning(int position) async {
     Timer timer;
     bool positive = elasticPosition > listColors[position].positionY;
-    timer = await Timer.periodic(Duration(milliseconds: 5), (Timer t) {
+    timer = await Timer.periodic(Duration(milliseconds: 2), (Timer t) {
       if (positive) {
         if (listColors[position].positionY < elasticPosition) {
-          listColors[position].positionY += 2;
+          listColors[position].positionY += 1;
         } else {
           timer?.cancel();
+          elasticPosition = null;
+          startPurgingTheList();
         }
       } else {
         if (listColors[position].positionY > elasticPosition) {
-          listColors[position].positionY -= 2;
+          listColors[position].positionY -= 1;
         } else {
           timer?.cancel();
           elasticPosition = null;
@@ -204,9 +206,9 @@ class _MyHomePageState extends State<MyHomePage> {
     print('we are entered here: ${position}');
     Timer timer;
     var goal = listColors[position].positionY + 60;
-    timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
+    timer = Timer.periodic(Duration(milliseconds: 2), (Timer t) {
       if (listColors[position].positionY < goal) {
-        listColors[position].positionY += 2;
+        listColors[position].positionY += 1;
       } else {
         timer?.cancel();
       }
@@ -214,6 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void startPurgingTheList() {
+    print('initial list: $listColors');
     if (purgeList.length > 0) {
       for (var index in purgeList){
         if (index >= 0 && index < listColors.length) {
@@ -221,5 +224,10 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     }
+    purgeList = [];
+    fixedList = listColors;
+     elasticPosition = null;
+     currentDragPosition = null;
+    print('after modification list: $listColors');
   }
 }
