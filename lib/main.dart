@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<int> purgeList = [];
   var listColors = [
     MyCard(60, Colors.red, "red"),
-    MyCard(120, Colors.yellow,"yellow"),
+    MyCard(120, Colors.yellow, "yellow"),
     MyCard(180, Colors.purple, "purple"),
     MyCard(240, Colors.orange, "orange"),
     MyCard(300, Colors.green, "green"),
@@ -197,9 +197,6 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       setState(() {});
     });
-
-    print('the elastic position: $elasticPosition');
-    print('the final list size: ${listColors.length}');
   }
 
   void moveNextCardWithAnimation(int position, int currentY, int destination) {
@@ -218,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void startPurgingTheList() {
     print('initial list: $listColors');
     if (purgeList.length > 0) {
-      for (var index in purgeList){
+      for (var index in purgeList) {
         if (index >= 0 && index < listColors.length) {
           listColors.removeAt(index);
         }
@@ -226,8 +223,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     purgeList = [];
     fixedList = listColors;
-     elasticPosition = null;
-     currentDragPosition = null;
+    elasticPosition = null;
+    currentDragPosition = null;
     print('after modification list: $listColors');
   }
 }
