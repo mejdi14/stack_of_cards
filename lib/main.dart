@@ -158,11 +158,6 @@ class _MyHomePageState extends State<MyHomePage> {
             alreadyFound = true;
             destination = counter;
             backwordAnimation = card;
-
-            print(' here we go again : $destination');
-            print(' here we go again2 : ${card.name}');
-            print(' here we go again3 : ${listColors[position].name}');
-            print(' here we go again4 : ${backwordAnimation}');
           }
         }
         counter++;
@@ -225,7 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void moveNextCardWithAnimation(int position, int currentY, int destination) {
     Timer timer;
-    var goal = listColors[position].positionY - 120;
+    var goal = listColors[position].positionY - 60;
     timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
       if (listColors[position].positionY > goal) {
         listColors[position].positionY -= 2;
@@ -265,14 +260,12 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         timer?.cancel();
         fixedList[destination].positionY =
-            fixedList[destination].positionY - 60;
-        print('new card : ${fixedList[destination]}');
+            fixedList[destination].positionY ;
         listColors.insert(position, fixedList[destination]);
-        print('after animation : ${listColors.toString()}');
         backwordAnimation = fixedList[destination];
         listColors.removeAt(position + 2);
         positionSwitch = position + 1;
-        //moveNextCardWithAnimation((position), 60, destination);
+        moveNextCardWithAnimation((position), 60, destination);
         setState(() {});
         return;
         fixedList[destination].positionY =
