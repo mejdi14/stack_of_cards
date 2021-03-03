@@ -35,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool ableToDrag = true;
   bool endAnimation = false;
   List<int> purgeList = [];
+  var movingPosition;
   var listColors = [
     MyCard(60, Colors.red, "red"),
     MyCard(120, Colors.yellow, "yellow"),
@@ -160,14 +161,17 @@ class _MyHomePageState extends State<MyHomePage> {
       if (destination != null &&
           listColors[position - 1].color != listColors[destination].color) {
         print('enter here');
+        movingPosition = position;
         animateCardDown(position, 60, destination);
+
         //elasticPosition = listColors[destination].positionY;
-        fixedList[destination].positionY = fixedList[destination].positionY;
+        fixedList[destination].positionY = fixedList[destination].positionY - 60;
         print('new card : ${fixedList[destination]}');
         listColors.insert(position, fixedList[destination]);
+        movingPosition = position - 1;
         print('all the list${listColors}');
         print('the list after: ${listColors}');
-        moveNextCardWithAnimation((position), 60, destination);
+       // moveNextCardWithAnimation((position), 60, destination);
       }
     }
     setState(() {});
@@ -245,10 +249,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void animateCardDown(int position, int currentY, int destination) {
     Timer timer;
-    var goal = listColors[destination].positionY + 120;
+    var goal = listColors[movingPosition].positionY + 120;
     timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
-      if (listColors[destination].positionY < goal) {
-        listColors[destination].positionY += 2;
+      if (listColors[movingPosition].positionY < goal) {
+        listColors[movingPosition].positionY += 2;
       } else {
         timer?.cancel();
         if (endAnimation) {}
