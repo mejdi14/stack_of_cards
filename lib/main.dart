@@ -35,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool ableToDrag = true;
   bool endAnimation = false;
   List<int> purgeList = [];
+  int positionSwitch;
   MyCard backwordAnimation;
   var movingPosition;
   var listColors = [
@@ -114,8 +115,10 @@ class _MyHomePageState extends State<MyHomePage> {
       MyCard nextCard, int position) {
     if ((listColors[position].positionY + dy) > listColors[0].positionY &&
         (listColors[position].positionY + dy) <
-            listColors[listColors.length - 1].positionY)
-      listColors[position].positionY += dy;
+            listColors[listColors.length - 1]
+                .positionY) if (positionSwitch != null &&
+        positionSwitch != position) position = positionSwitch;
+    listColors[position].positionY += dy;
     ////////////////////////////// up drag animation/////////////////////////////
     if (dy < 0) {
       var destination;
@@ -149,10 +152,12 @@ class _MyHomePageState extends State<MyHomePage> {
       for (var card in listColors) {
         if (card.positionY >= listColors[position].positionY - 10 &&
             card.positionY <= listColors[position].positionY + 10 &&
-            card.name != listColors[position].name && (backwordAnimation == null || backwordAnimation != card)) {
+            card.name != listColors[position].name &&
+            (backwordAnimation == null || backwordAnimation != card)) {
           if (!alreadyFound) {
             alreadyFound = true;
             destination = counter;
+            backwordAnimation = card;
 
             print(' here we go again : $destination');
             print(' here we go again2 : ${card.name}');
@@ -253,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void animateCardDown(int position, int currentY, int destination) {
     Timer timer;
-    var goal = listColors[destination].positionY + 120;
+    var goal = listColors[destination].positionY + 60;
     timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
       if (listColors[destination].positionY < goal) {
         listColors[destination].positionY += 2;
@@ -265,10 +270,13 @@ class _MyHomePageState extends State<MyHomePage> {
         listColors.insert(position, fixedList[destination]);
         print('after animation : ${listColors.toString()}');
         backwordAnimation = fixedList[destination];
+        listColors.removeAt(position + 2);
+        positionSwitch = position + 1;
         //moveNextCardWithAnimation((position), 60, destination);
         setState(() {});
         return;
-        fixedList[destination].positionY = fixedList[destination].positionY - 60;
+        fixedList[destination].positionY =
+            fixedList[destination].positionY - 60;
         print('new card : ${fixedList[destination]}');
         listColors.insert(position, fixedList[destination]);
       }
