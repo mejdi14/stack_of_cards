@@ -170,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
         /*movingPosition = position - 1;
         print('all the list${listColors}');
         print('the list after: ${listColors}');*/
-       // moveNextCardWithAnimation((position), 60, destination);
+        // moveNextCardWithAnimation((position), 60, destination);
       }
     }
     setState(() {});
@@ -221,7 +221,6 @@ class _MyHomePageState extends State<MyHomePage> {
         listColors[position].positionY -= 2;
       } else {
         timer?.cancel();
-
       }
     });
   }
@@ -234,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
     elasticPosition = null;
     currentDragPosition = null;
     ableToDrag = true;
-    print('after modification list: $listColors');
+    print('after modification list: ${listColors.length}');
   }
 
   void resetColorsList() {
@@ -255,11 +254,16 @@ class _MyHomePageState extends State<MyHomePage> {
         listColors[destination].positionY += 2;
       } else {
         timer?.cancel();
-        fixedList[destination].positionY = fixedList[destination].positionY - 60;
+        fixedList[destination].positionY =
+            fixedList[destination].positionY - 60;
         print('new card : ${fixedList[destination]}');
         listColors.insert(position, fixedList[destination]);
         setState(() {});
         print('after animation : ${listColors.toString()}');
+        return;
+        fixedList[destination].positionY = fixedList[destination].positionY - 60;
+        print('new card : ${fixedList[destination]}');
+        listColors.insert(position, fixedList[destination]);
       }
     });
   }
