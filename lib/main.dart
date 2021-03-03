@@ -35,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool ableToDrag = true;
   bool endAnimation = false;
   List<int> purgeList = [];
+  MyCard backwordAnimation;
   var movingPosition;
   var listColors = [
     MyCard(60, Colors.red, "red"),
@@ -148,11 +149,15 @@ class _MyHomePageState extends State<MyHomePage> {
       for (var card in listColors) {
         if (card.positionY >= listColors[position].positionY - 10 &&
             card.positionY <= listColors[position].positionY + 10 &&
-            card != listColors[position]) {
+            card.name != listColors[position].name && (backwordAnimation == null || backwordAnimation != card)) {
           if (!alreadyFound) {
             alreadyFound = true;
             destination = counter;
-            print(destination);
+
+            print(' here we go again : $destination');
+            print(' here we go again2 : ${card.name}');
+            print(' here we go again3 : ${listColors[position].name}');
+            print(' here we go again4 : ${backwordAnimation}');
           }
         }
         counter++;
@@ -258,8 +263,10 @@ class _MyHomePageState extends State<MyHomePage> {
             fixedList[destination].positionY - 60;
         print('new card : ${fixedList[destination]}');
         listColors.insert(position, fixedList[destination]);
-        setState(() {});
         print('after animation : ${listColors.toString()}');
+        backwordAnimation = fixedList[destination];
+        //moveNextCardWithAnimation((position), 60, destination);
+        setState(() {});
         return;
         fixedList[destination].positionY = fixedList[destination].positionY - 60;
         print('new card : ${fixedList[destination]}');
