@@ -121,7 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
         if (card.positionY >= listColors[position].positionY - 10 &&
             card.positionY <= listColors[position].positionY + 10 &&
             card != listColors[position]) {
-
           destination = counter;
         }
         counter++;
@@ -141,13 +140,15 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     ////////////////////// down drag animation//////////////////////////////////
     else {
-       var destination;
+      var destination;
       var counter = 0;
       for (var i = listColors.length - 1; i >= 0; i--) {
-        if (fixedList[i].positionY <= listColors[position].positionY + 10 &&
-            fixedList[i].positionY >= listColors[position].positionY - 10 &&
-            fixedList[i] != listColors[position]) {
-          print('fixed : ${fixedList[i].positionY } and mien: ${listColors[position].positionY + 10}');
+        if (fixedList[i].positionY >= listColors[position].positionY - 10 &&
+            fixedList[i].positionY <= listColors[position].positionY + 10 &&
+            fixedList[i] != listColors[position] &&
+            i != position) {
+          print(
+              'fixed : ${fixedList[i].positionY} and mien: ${listColors[position].positionY}');
           destination = i;
         }
         counter++;
@@ -155,11 +156,13 @@ class _MyHomePageState extends State<MyHomePage> {
       print('destination: $destination');
       if (destination != null &&
           listColors[position - 1].color != listColors[destination].color) {
-       // elasticPosition = listColors[destination].positionY;
+        print('enter here');
+        animateCardDown(position + 1, 60, destination);
+        /*   elasticPosition = listColors[destination].positionY;
         fixedList[destination].positionY =
-            fixedList[destination].positionY - 100;
-        listColors.insert(position - 1, fixedList[destination]);
-       // moveNextCardWithAnimation((position - 1), 60, destination);
+            fixedList[destination].positionY + 60;
+        listColors.insert(position - 1, fixedList[destination]);*/
+        // moveNextCardWithAnimation((position - 1), 60, destination);
       }
     }
     setState(() {});
@@ -233,5 +236,17 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     }
+  }
+
+  void animateCardDown(int position, int currentY, int destination) {
+    Timer timer;
+    var goal = listColors[position].positionY + 60;
+    timer = Timer.periodic(Duration(milliseconds: 2), (Timer t) {
+      if (listColors[position].positionY < goal) {
+        listColors[position].positionY += 1;
+      } else {
+        timer?.cancel();
+      }
+    });
   }
 }
