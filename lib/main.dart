@@ -165,12 +165,11 @@ class _MyHomePageState extends State<MyHomePage> {
         animateCardDown(position, 60, destination);
 
         //elasticPosition = listColors[destination].positionY;
-        fixedList[destination].positionY = fixedList[destination].positionY - 60;
-        print('new card : ${fixedList[destination]}');
-        listColors.insert(position, fixedList[destination]);
-        movingPosition = position - 1;
+
         print('all the list${listColors}');
-        print('the list after: ${listColors}');
+        /*movingPosition = position - 1;
+        print('all the list${listColors}');
+        print('the list after: ${listColors}');*/
        // moveNextCardWithAnimation((position), 60, destination);
       }
     }
@@ -222,6 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
         listColors[position].positionY -= 2;
       } else {
         timer?.cancel();
+
       }
     });
   }
@@ -249,13 +249,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void animateCardDown(int position, int currentY, int destination) {
     Timer timer;
-    var goal = listColors[movingPosition].positionY + 120;
+    var goal = listColors[destination].positionY + 120;
     timer = Timer.periodic(Duration(milliseconds: 5), (Timer t) {
-      if (listColors[movingPosition].positionY < goal) {
-        listColors[movingPosition].positionY += 2;
+      if (listColors[destination].positionY < goal) {
+        listColors[destination].positionY += 2;
       } else {
         timer?.cancel();
-        if (endAnimation) {}
+        fixedList[destination].positionY = fixedList[destination].positionY - 60;
+        print('new card : ${fixedList[destination]}');
+        listColors.insert(position, fixedList[destination]);
+        setState(() {});
+        print('after animation : ${listColors.toString()}');
       }
     });
   }
